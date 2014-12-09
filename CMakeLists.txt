@@ -4,8 +4,7 @@ project(FlatBuffers)
 
 # NOTE: Code coverage only works on Linux & OSX.
 option(FLATBUFFERS_CODE_COVERAGE "Enable the code coverage build option." OFF)
-option(FLATBUFFERS_BUILD_TESTS "Enable the build of tests and samples." ON)
-option(FLATBUFFERS_INSTALL "Enable the installation of targets." ON)
+option(FLATBUFFERS_INSTALL "Enable the installation of targets." OFF)
 
 set(FlatBuffers_Compiler_SRCS
   include/flatbuffers/flatbuffers.h
@@ -80,28 +79,9 @@ function(compile_flatbuffers_schema_to_cpp SRC_FBS)
     DEPENDS flatc)
 endfunction()
 
-if(FLATBUFFERS_BUILD_TESTS)
-  compile_flatbuffers_schema_to_cpp(tests/monster_test.fbs)
-  include_directories(${CMAKE_CURRENT_BINARY_DIR}/tests)
-  add_executable(flattests ${FlatBuffers_Tests_SRCS})
-
-  compile_flatbuffers_schema_to_cpp(samples/monster.fbs)
-  include_directories(${CMAKE_CURRENT_BINARY_DIR}/samples)
-  add_executable(flatsamplebinary ${FlatBuffers_Sample_Binary_SRCS})
-  add_executable(flatsampletext ${FlatBuffers_Sample_Text_SRCS})
-endif()
-
 if(FLATBUFFERS_INSTALL)
   install(DIRECTORY include/flatbuffers DESTINATION include)
   install(TARGETS flatc DESTINATION bin)
-endif()
-
-if(FLATBUFFERS_BUILD_TESTS)
-  enable_testing()
-
-  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/tests" DESTINATION
-       "${CMAKE_CURRENT_BINARY_DIR}")
-  add_test(NAME flattests COMMAND flattests)
 endif()
 
 get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
